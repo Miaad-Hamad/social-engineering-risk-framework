@@ -282,7 +282,12 @@ admin_password = st.sidebar.text_input("Admin password", type="password")
 if admin_password == ADMIN_PASSWORD:
     st.sidebar.success("Admin access granted.")
     st.subheader("Admin Statistics")
+if st.button("Clear Results"):
+    pd.DataFrame(
+        columns=["Timestamp","Layer","Risk Score","Risk Level"]
+    ).to_csv(RESULTS_FILE, index=False)
 
+    st.success("Results cleared successfully.")
     if os.path.exists(RESULTS_FILE):
         results_df = pd.read_csv(RESULTS_FILE)
 
