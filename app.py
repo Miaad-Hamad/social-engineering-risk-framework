@@ -45,20 +45,21 @@ def classify_risk(score):
         return "High Risk", "🔴"
 
 def save_result(layer_name, risk_score, risk_level):
-    new_result = {
+    new_result = pd.DataFrame([{
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "Layer": layer_name,
         "Risk Score": risk_score,
         "Risk Level": risk_level
-    }
+    }])
 
-    if os.path.exists(RESULTS_FILE):
-        df = pd.read_csv(RESULTS_FILE)
-        df = pd.concat([df, pd.DataFrame([new_result])], ignore_index=True)
-    else:
-        df = pd.DataFrame([new_result])
+    file_exists = os.path.exists(RESULTS_FILE) and os.path.getsize(RESULTS_FILE) > 0
 
-    df.to_csv(RESULTS_FILE, index=False)
+    new_result.to_csv(
+        RESULTS_FILE,
+        mode="a",
+        header=not file_exists,
+        index=False
+    )
 
 def show_results(layer_name, scores, recommendations):
     risk_score = calculate_risk_score(scores)
